@@ -15,8 +15,8 @@ Walla.Slider = function(elem) {
 	this.directionModifier	= this.calculateDirectionModifier();
 	this.reset();
 	
-	var plugin = new Walla.Slider.Carousel(this);
-//	var plugin = new Walla.Slider.CarouselFallback(this);
+	// var plugin = new Walla.Slider.Carousel(this);
+	var plugin = new Walla.Slider.CarouselFallback(this);
 
 };
 
@@ -168,11 +168,9 @@ Walla.Slider.Carousel.prototype = {
 
 Walla.Slider.CarouselFallback = function(slider) {
 	if(slider) {// check if slider is passed to make it safer for inheritance
-		this.slider						= slider;
-		var t							= this;
-		this.fallbackAnimationProperty	= slider.getDirectionModifier() < 0 ? 'margin-left' : 'margin-right';
-		this.wrapperOriginalMargin		= parseInt(slider.itemsWrapper.css(this.fallbackAnimationProperty));
+		this.slider = slider;
 		this.reset();
+		slider.itemsWrapper.css('position', 'relative');
 		this.bind();
 	}
 };
@@ -181,14 +179,15 @@ Walla.Slider.CarouselFallback.prototype = $.extend(new Walla.Slider.Carousel, {
 
 	fixPosition: function() {
 		var slider = this.slider;
-		slider.itemsWrapper.css(this.fallbackAnimationProperty, this.wrapperOriginalMargin+(0-1)*slider.getItemWidth()*slider.getTotalItems());
+		slider.itemsWrapper.css('left', slider.getDirectionModifier()*slider.getItemWidth()*slider.getTotalItems());
 	},
 
 	slide: function() {
 		var slider = this.slider;
-		var animateObj = {};
-		animateObj[this.fallbackAnimationProperty] = this.wrapperOriginalMargin+(0-1)*slider.getItemWidth()*slider.itemsMoved;
-		slider.itemsWrapper.animate(animateObj, {duration:1500, complete: function(event){slider.slideEnd();}});
+		slider.itemsWrapper.animate(
+			{'left': slider.getDirectionModifier()*slider.getItemWidth()*slider.itemsMoved},
+			{duration:1500, complete: function(event){slider.slideEnd();}
+		});
 	}
 });
 

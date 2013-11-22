@@ -2,7 +2,7 @@ body {
   direction: ltr;
 }
 .inner-body {
-  direction: rtl;
+  direction: ltr;
 }
 .container {
   max-width: 960px;
