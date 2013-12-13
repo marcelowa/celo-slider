@@ -1,19 +1,30 @@
 (function($){
-	window['Walla'] = window['walla'] || {};
+	window['Celo'] = window['Celo'] || {};
 
-	Walla.Slider = function(elem, options) {
+	Celo.Slider = function(elem, options) {
+		var t = this;
 		this.elem				= elem;
 		this.options			= $.extend(
 			{
-				'loopMode'			: true,
+				// 'loopMode'			: true,
 				'easing'			: 'ease',
 				'duration'			: 1250,
 				'itemSelector'		: '.slider-item',
 				'maskSelector'		: '.slider-mask',
-				'slidableSelector'	: '.slider-items-slidable'
+				'slidableSelector'	: '.slider-items-slidable',
+				'forwardSelector'	: '.slider-forward',
+				'backwardSelector'	: '.slider-backward'
 			},
 			options||{}
 		);
+
+		$(this.options.forwardSelector, elem).on('click', function() {
+			t.slideForward();
+		});
+
+		$(this.options.backwardSelector, elem).on('click', function() {
+			t.slideBackward();
+		});
 
 		this.position			= 0;
 		this.inSlide			= 0;
@@ -24,15 +35,15 @@
 		this.reset();
 
 		if (Modernizr.csstransforms) {
-			var plugin = new Walla.Slider.Carousel(this);
+			var plugin = new Celo.Slider.Carousel(this);
 		}
 		else {
-			var plugin = new Walla.Slider.CarouselFallback(this);
+			var plugin = new Celo.Slider.CarouselFallback(this);
 		}
 
 	};
 
-	Walla.Slider.prototype = {
+	Celo.Slider.prototype = {
 		reset: function() {
 		},
 		getItems: function() {
@@ -95,19 +106,8 @@
 			$(this).trigger('pluginSlide');
 		}
 	};
-	Walla.Slider.init = function(elem) {
-		var jElem = $(elem);
-		var slider = new Walla.Slider(elem);
-		$('.slider-forward', jElem).on('click', function() {
-			slider.slideForward();
-		});
 
-		$('.slider-backward', jElem).on('click', function() {
-			slider.slideBackward();
-		});
-	};
-
-	Walla.Slider.Carousel = function(slider) {
+	Celo.Slider.Carousel = function(slider) {
 		if(slider) { // check if slider is passed to make it safer for inheritance
 			var transEndEventNames = {
 				'WebkitTransition' : 'webkitTransitionEnd',// Saf 6, Android Browser
@@ -134,7 +134,7 @@
 		}
 	};
 
-	Walla.Slider.Carousel.prototype = {
+	Celo.Slider.Carousel.prototype = {
 		bind: function() {
 			var slider = this.slider;
 			var t = this;
@@ -192,7 +192,7 @@
 		}
 	};
 
-	Walla.Slider.CarouselFallback = function(slider) {
+	Celo.Slider.CarouselFallback = function(slider) {
 		if(slider) {// check if slider is passed to make it safer for inheritance
 			this.slider		= slider;
 			this.easing		= {}[slider.options.easing]||'swing';
@@ -204,7 +204,7 @@
 		}
 	};
 
-	Walla.Slider.CarouselFallback.prototype = $.extend(new Walla.Slider.Carousel, {
+	Celo.Slider.CarouselFallback.prototype = $.extend(new Celo.Slider.Carousel, {
 
 		jumpToPosition: function() {
 			var slider = this.slider;
@@ -224,9 +224,12 @@
 		}
 	});
 
-	$(function(){
-		Walla.Slider.init($('.slider')[0]);
-	});
+	$.fn.celoSlider = function(options) {
+	    return this.each(function() {
+	    	var elem = $(this);
+	    	var slider = new Celo.Slider(elem, options);
+	    });
+	};
 
 })(jQuery);
 
