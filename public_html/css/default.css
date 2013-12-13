@@ -2,7 +2,7 @@ body {
   direction: ltr;
 }
 .inner-body {
-  direction: ltr;
+  direction: rtl;
 }
 .container {
   max-width: 960px;
@@ -10,30 +10,37 @@ body {
 }
 .slider {
   background-color: green;
+  overflow: hidden;
 }
 .slider .slider-mask {
   overflow: hidden;
 }
-.slider .slider-items-wrapper {
+.slider .slider-items-outer-wrapper {
+	zoom:1;
+	margin: 0 -0.5%;
+}
+.slider .slider-items-slidable {
   white-space: nowrap;
-  margin: 0 -0.51%;
 }
-.slider .slider-items-wrapper.sliding {
-  -webkit-transition:-webkit-transform 2s ease;
-  -moz-transition:-moz-transform 2s ease;
-  -o-transition:-o-transform 2s ease;
-  -ie-transition:-ie-transform 2s ease;
-}
-.slider .slider-items-wrapper .slider-item {
+/*.slider .slider-items-slidable.sliding {
+	 -webkit-transition:-webkit-transform 2s ease;
+	 -moz-transition:-moz-transform 2s ease;
+	 -o-transition:-o-transform 2s ease;
+	 -ie-transition:-ie-transform 2s ease;
+ }*/
+.slider .slider-item {
   padding: 0 0.5%;
   width: 19%;
   display: inline-block;
+  *display: inline;
+  zoom:1;
   vertical-align: top;
 }
-.slider .slider-items-wrapper .slider-item article > a {
+
+.slider .slider-items-slidable .slider-item article > a {
   display: block;
 }
-.slider .slider-items-wrapper .slider-item figure > img {
+.slider .slider-items-slidable .slider-item figure > img {
   width: 100%;
   height: 100%;
 }
