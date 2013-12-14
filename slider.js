@@ -3,8 +3,8 @@
 
 	Celo.Slider = function(elem, options) {
 		var t = this;
-		this.elem				= elem;
-		this.options			= $.extend(
+		this.elem = elem;
+		this.options = $.extend(
 			{
 				// 'loopMode'			: true,
 				'easing'			: 'ease',
@@ -12,10 +12,11 @@
 				'itemSelector'		: '.slider-item',
 				'maskSelector'		: '.slider-mask',
 				'slidableSelector'	: '.slider-items-slidable',
+				'sliderItemSelector' : '.slider-item',
 				'forwardSelector'	: '.slider-forward',
 				'backwardSelector'	: '.slider-backward'
 			},
-			options||{}
+			options || {}
 		);
 
 		$(this.options.forwardSelector, elem).on('click', function() {
@@ -31,21 +32,17 @@
 		this.slidable			= $(this.options.slidableSelector, elem);
 		this.mask 				= $(this.options.maskSelector, elem);
 		this.items				= this.resetItems();
-		this.directionModifier	= this.calculateDirectionModifier();
-		this.reset();
 
 		if (Modernizr.csstransforms) {
-			var plugin = new Celo.Slider.Carousel(this);
+			var plugin = new Celo.Slider.CarouselLoop(this);
 		}
 		else {
-			var plugin = new Celo.Slider.CarouselFallback(this);
+			var plugin = new Celo.Slider.CarouselLoopFallback(this);
 		}
 
 	};
 
 	Celo.Slider.prototype = {
-		reset: function() {
-		},
 		getItems: function() {
 			return this.items;
 		},
@@ -63,18 +60,15 @@
 			});
 			return items;
 		},
-		calculateDirectionModifier : function() {
+		getDirectionModifier : function() {
 			var items = this.getItems();
 			return (items[0].offsetLeft > items[items.length-1].offsetLeft) ? 1 : 0-1;
-		},
-		getDirectionModifier : function() {
-			return this.directionModifier;
 		},
 		getSlidableWidth: function() {
 			return this.slidable.width();
 		},
 		getItemWidth: function() {
-			return $('.slider-item',this.slidable).outerWidth();
+			return $(this.options.sliderItemSelector,this.slidable).outerWidth();
 		},
 		getPosition : function() {
 			return this.position;
@@ -107,7 +101,7 @@
 		}
 	};
 
-	Celo.Slider.Carousel = function(slider) {
+	Celo.Slider.CarouselLoop = function(slider) {
 		if(slider) { // check if slider is passed to make it safer for inheritance
 			var transEndEventNames = {
 				'WebkitTransition' : 'webkitTransitionEnd',// Saf 6, Android Browser
@@ -134,7 +128,7 @@
 		}
 	};
 
-	Celo.Slider.Carousel.prototype = {
+	Celo.Slider.CarouselLoop.prototype = {
 		bind: function() {
 			var slider = this.slider;
 			var t = this;
@@ -192,7 +186,7 @@
 		}
 	};
 
-	Celo.Slider.CarouselFallback = function(slider) {
+	Celo.Slider.CarouselLoopFallback = function(slider) {
 		if(slider) {// check if slider is passed to make it safer for inheritance
 			this.slider		= slider;
 			this.easing		= {}[slider.options.easing]||'swing';
@@ -204,7 +198,7 @@
 		}
 	};
 
-	Celo.Slider.CarouselFallback.prototype = $.extend(new Celo.Slider.Carousel, {
+	Celo.Slider.CarouselLoopFallback.prototype = $.extend(new Celo.Slider.CarouselLoop, {
 
 		jumpToPosition: function() {
 			var slider = this.slider;
@@ -232,5 +226,3 @@
 	};
 
 })(jQuery);
-
-
