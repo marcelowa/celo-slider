@@ -221,7 +221,7 @@
 	$.fn.celoSlider = function(options) {
 	    return this.each(function() {
 	    	var elem = $(this);
-	    	var slider = new Celo.Slider(elem, options);
+	    	this.celoSlider = this.celoSlider || new Celo.Slider(elem, options);
 	    });
 	};
 
