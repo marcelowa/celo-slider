@@ -28,17 +28,19 @@
 		});
 
 		this.position			= 0;
+		
 		this.inSlide			= 0;
 		this.slidable			= $(this.options.slidableSelector, elem);
 		this.mask 				= $(this.options.maskSelector, elem);
 		this.items				= this.resetItems();
-
+		this.offsetZero			= this.items[0].offsetLeft;
 		if (Modernizr.csstransforms) {
 			var plugin = new Celo.Slider.CarouselLoop(this);
 		}
 		else {
 			var plugin = new Celo.Slider.CarouselLoopFallback(this);
 		}
+
 
 	};
 
@@ -51,6 +53,19 @@
 			return this.items;
 		},
 		getTotalVisibleItems: function() {
+			var items=[], outerWidth=0,marginWidth,width=0, mask=this.mask, maskWidth;
+			maskWidth = $(mask).width();
+			this.items.each(function(){
+				outerWidth = $(this).outerWidth(true);
+				marginWidth = outerWidth - $(this).width() + 1;
+				width += outerWidth;
+				if (width <= maskWidth+marginWidth) {
+					items.push(this);
+				}
+			});
+			return items.length;
+		},
+		old_getTotalVisibleItems: function() {
 			var items=0, width=0, mask=this.mask;
 			this.items.each(function(){
 				if (width < $(mask).width()) {
@@ -147,7 +162,10 @@
 		reset: function() {
 			var slider = this.slider;
 			slider.resetItems();
-			slider.setPosition(100);
+			var position = (slider.offsetZero-slider.items[slider.getTotalVisibleItems()].offsetLeft)/slider.mask.width()*100;
+			console.log(position/100*slider.mask.width());
+			console.log(slider.items[slider.getTotalVisibleItems()].offsetLeft, position);
+			slider.setPosition(position);
 			slider.slidable.prepend(slider.getItems().slice((0-1)*slider.getTotalVisibleItems()).clone());
 			slider.slidable.append(slider.getItems().slice(0,slider.getTotalVisibleItems()).clone());
 			this.jumpToPosition();
